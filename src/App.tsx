@@ -368,20 +368,45 @@ function App() {
           <div className="command-palette-overlay" onClick={() => setShowCommandPalette(false)}>
             <div className="command-palette" onClick={e => e.stopPropagation()}>
                <div className="palette-header">
-                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                 <input autoFocus type="text" placeholder="Search everywhere (Settings, Users, Drafts)..." value={paletteQuery} onChange={e => setPaletteQuery(e.target.value)} />
-                 <span className="esc-hint">ESC to close</span>
+                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                 <input autoFocus type="text" placeholder="Search myTYSON or type a command..." value={paletteQuery} onChange={e => setPaletteQuery(e.target.value)} />
+                 <span className="esc-hint">ESC</span>
                </div>
                <div className="palette-results">
-                 <div className="palette-section">Quick Actions</div>
-                 <button onClick={() => { setActiveTab('Content Editor'); setShowCommandPalette(false); }}>New Draft</button>
-                 <button onClick={() => { setActiveTab('Settings'); setShowCommandPalette(false); }}>System Settings</button>
-                 <button onClick={() => { setDarkMode(!darkMode); setShowCommandPalette(false); }}>Toggle Theme</button>
-                 <button onClick={() => { setIsLoggedIn(false); setShowCommandPalette(false); }}>Log Out</button>
-                 <div className="palette-section">Recent Items</div>
-                 {articles.slice(0,3).map(a => (
-                    <button key={a.id} onClick={() => { handleEditArticle(a); setShowCommandPalette(false); }}>{a.title} <em>({a.status})</em></button>
-                 ))}
+                 {paletteQuery.toLowerCase().includes('ask ai') ? (
+                    <div style={{padding: '2rem', textAlign: 'center', color: '#8ab4f8'}}>
+                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" style={{marginBottom:'1rem'}}><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                      <h3>AI Assistant Ready</h3>
+                      <p style={{color: 'rgba(255,255,255,0.5)'}}>What would you like me to draft for you today?</p>
+                    </div>
+                 ) : (
+                   <>
+                     <div className="palette-section">Quick Actions</div>
+                     <button onClick={() => { setActiveTab('Content Editor'); setShowCommandPalette(false); }}>
+                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                       Start a New Draft
+                     </button>
+                     <button onClick={() => { setPaletteQuery('Ask AI: '); }}>
+                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8ab4f8" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                       <span style={{color: '#8ab4f8'}}>Ask AI to Draft Something...</span>
+                     </button>
+                     <button onClick={() => { setDarkMode(!darkMode); setShowCommandPalette(false); }}>
+                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                       Toggle Dark/Light Mode
+                     </button>
+
+                     <div className="palette-section">Search Articles</div>
+                     {filteredArticles.length > 0 ? filteredArticles.slice(0,5).map(a => (
+                        <button key={a.id} onClick={() => { handleEditArticle(a); setShowCommandPalette(false); }}>
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                          {a.title}
+                          <span className="badge">{a.status}</span>
+                        </button>
+                     )) : (
+                        <div style={{padding: '1rem', color: 'rgba(255,255,255,0.3)'}}>No articles match your search.</div>
+                     )}
+                   </>
+                 )}
                </div>
             </div>
           </div>
